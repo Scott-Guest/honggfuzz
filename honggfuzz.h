@@ -245,7 +245,7 @@ typedef struct {
     struct {
         time_t  timeStart;
         time_t  runEndTime;
-        time_t  tmOut;
+        int64_t tmOutUSecs;
         time_t  lastCovUpdate;
         time_t  exitOnTime;
         int64_t timeOfLongestUnitUSecs;

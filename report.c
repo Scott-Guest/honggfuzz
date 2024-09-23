@@ -99,7 +99,7 @@ void report_saveReport(run_t* run) {
         " mutationsPerRun : %u\n"
         " externalCmd     : %s\n"
         " fuzzStdin       : %s\n"
-        " timeout         : %ld (sec)\n"
+        " timeout         : %" PRId64 " (us)\n"
 #if defined(_HF_ARCH_LINUX) || defined(_HF_ARCH_NETBSD)
         " ignoreAddr      : %p\n"
 #endif
@@ -109,7 +109,7 @@ void report_saveReport(run_t* run) {
         " wordlistFile    : %s\n",
         localtmstr, run->global->mutate.mutationsPerRun,
         run->global->exe.externalCommand == NULL ? "NULL" : run->global->exe.externalCommand,
-        run->global->exe.fuzzStdin ? "TRUE" : "FALSE", (long)run->global->timing.tmOut,
+        run->global->exe.fuzzStdin ? "TRUE" : "FALSE", run->global->timing.tmOutUSecs,
 #if defined(_HF_ARCH_LINUX)
         run->global->arch_linux.ignoreAddr,
 #elif defined(_HF_ARCH_NETBSD)

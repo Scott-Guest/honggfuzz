@@ -381,8 +381,8 @@ void display_display(honggfuzz_t* hfuzz) {
         crashesCnt > 0 ? ESC_RED : "", hfuzz->cnts.crashesCnt, crashesCnt > 0 ? ESC_RED : "",
         ATOMIC_GET(hfuzz->cnts.uniqueCrashesCnt), ATOMIC_GET(hfuzz->cnts.blCrashesCnt),
         ATOMIC_GET(hfuzz->cnts.verifiedCrashesCnt));
-    display_put("    Timeouts : " ESC_BOLD "%" _HF_NONMON_SEP "zu" ESC_RESET " [%lu sec]\n",
-        ATOMIC_GET(hfuzz->cnts.timeoutedCnt), (unsigned long)hfuzz->timing.tmOut);
+    display_put("    Timeouts : " ESC_BOLD "%" _HF_NONMON_SEP "zu" ESC_RESET " [%" PRId64 " us]\n",
+        ATOMIC_GET(hfuzz->cnts.timeoutedCnt), hfuzz->timing.tmOutUSecs);
     /* Feedback data sources. Common headers. */
     display_put(" Corpus Size : " ESC_BOLD "%" _HF_NONMON_SEP "zu" ESC_RESET ", max: " ESC_BOLD
                 "%" _HF_NONMON_SEP "zu" ESC_RESET " bytes, init: " ESC_BOLD "%" _HF_NONMON_SEP

@@ -360,10 +360,11 @@ int main(int argc, char** argv) {
     char tmstr[64];
     util_getLocalTime("%F.%H.%M.%S", tmstr, sizeof(tmstr), time(NULL));
     LOG_I("Start time:'%s' bin:'%s', input:'%s', output:'%s', persistent:%s, stdin:%s, "
-          "mutation_rate:%u, timeout:%ld, max_runs:%zu, threads:%zu, minimize:%s, git_commit:%s",
+          "mutation_rate:%u, timeout:%" PRId64
+          ", max_runs:%zu, threads:%zu, minimize:%s, git_commit:%s",
         tmstr, hfuzz.exe.cmdline[0], hfuzz.io.inputDir,
         hfuzz.io.outputDir ? hfuzz.io.outputDir : hfuzz.io.inputDir, strYesNo(hfuzz.exe.persistent),
-        strYesNo(hfuzz.exe.fuzzStdin), hfuzz.mutate.mutationsPerRun, (long)hfuzz.timing.tmOut,
+        strYesNo(hfuzz.exe.fuzzStdin), hfuzz.mutate.mutationsPerRun, hfuzz.timing.tmOutUSecs,
         hfuzz.mutate.mutationsMax, hfuzz.threads.threadsMax, strYesNo(hfuzz.cfg.minimize),
         getGitVersion());
 

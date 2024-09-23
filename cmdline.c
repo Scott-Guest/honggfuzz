@@ -356,7 +356,7 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
             {
                 .timeStart              = time(NULL),
                 .runEndTime             = 0,
-                .tmOut                  = 1,
+                .tmOutUSecs             = 1000000,
                 .lastCovUpdate          = time(NULL),
                 .exitOnTime             = 0,
                 .timeOfLongestUnitUSecs = 0,
@@ -484,7 +484,7 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
         { { "minimize", no_argument, NULL, 'M' }, "Minimize the input corpus. It will most likely delete some corpus files (from the --input directory) if no --output is used!" },
         { { "noinst", no_argument, NULL, 'x' }, "Static mode only, disable any instrumentation (hw/sw) feedback" },
         { { "keep_output", no_argument, NULL, 'Q' }, "Don't close children's stdin, stdout, stderr; can be noisy" },
-        { { "timeout", required_argument, NULL, 't' }, "Timeout in seconds (default: 1 (second))" },
+        { { "timeout", required_argument, NULL, 't' }, "Timeout in micro-seconds (default: 1000000 (us))" },
         { { "threads", required_argument, NULL, 'n' }, "Number of concurrent fuzzing threads (default: number of CPUs / 2)" },
         { { "stdin_input", no_argument, NULL, 's' }, "Provide fuzzing input on STDIN, instead of " _HF_FILE_PLACEHOLDER },
         { { "mutations_per_run", required_argument, NULL, 'r' }, "Maximal number of mutations per one run (default: 6)" },
@@ -653,7 +653,7 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
             break;
         case 0x10B:
             hfuzz->socketFuzzer.enabled = true;
-            hfuzz->timing.tmOut         = 0; /* Disable process timeout checks */
+            hfuzz->timing.tmOutUSecs    = 0; /* Disable process timeout checks */
             break;
         case 0x10C:
             hfuzz->exe.netDriver = true;
@@ -677,7 +677,7 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
             hfuzz->io.maxFileSz = strtoul(optarg, NULL, 0);
             break;
         case 't':
-            hfuzz->timing.tmOut = atol(optarg);
+            hfuzz->timing.tmOutUSecs = strtoll(optarg, NULL, 10);
             break;
         case 'R':
             hfuzz->cfg.reportFile = optarg;

@@ -512,14 +512,14 @@ uint8_t subproc_System(run_t* run, const char* const argv[]) {
 }
 
 void subproc_checkTimeLimit(run_t* run) {
-    if (!run->global->timing.tmOut) {
+    if (!run->global->timing.tmOutUSecs) {
         return;
     }
 
     int64_t curUSecs  = util_timeNowUSecs();
     int64_t diffUSecs = curUSecs - run->timeStartedUSecs;
 
-    if (run->tmOutSignaled && (diffUSecs > ((run->global->timing.tmOut + 1) * 1000000))) {
+    if (run->tmOutSignaled && (diffUSecs > (run->global->timing.tmOutUSecs + 1000000))) {
         /* Has this instance been already signaled due to timeout? Just, SIGKILL it */
         LOG_W("pid=%d has already been signaled due to timeout. Killing it with SIGKILL",
             (int)run->pid);
@@ -527,10 +527,10 @@ void subproc_checkTimeLimit(run_t* run) {
         return;
     }
 
-    if ((diffUSecs > (run->global->timing.tmOut * 1000000)) && !run->tmOutSignaled) {
+    if ((diffUSecs > run->global->timing.tmOutUSecs) && !run->tmOutSignaled) {
         run->tmOutSignaled = true;
-        LOG_W("pid=%d took too much time (limit %ld s). Killing it with %s", (int)run->pid,
-            (long)run->global->timing.tmOut,
+        LOG_W("pid=%d took too much time (limit %" PRId64 " uss). Killing it with %s",
+            (int)run->pid, run->global->timing.tmOutUSecs,
             run->global->timing.tmoutVTALRM ? "SIGVTALRM" : "SIGKILL");
         if (run->global->timing.tmoutVTALRM) {
             kill(run->pid, SIGVTALRM);
