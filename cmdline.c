@@ -301,8 +301,8 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
             {
                 .threadsFinished  = 0,
                 .threadsMax       = ({
-                    long ncpus = sysconf(_SC_NPROCESSORS_ONLN);
-                    (ncpus <= 1 ? 1 : ncpus / 2);
+                          long ncpus = sysconf(_SC_NPROCESSORS_ONLN);
+                          (ncpus <= 1 ? 1 : ncpus / 2);
                 }),
                 .threadsActiveCnt = 0,
                 .pinThreadToCPUs  = 0,
