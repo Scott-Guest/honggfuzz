@@ -404,6 +404,7 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
                 .blocklist             = NULL,
                 .blocklistCnt          = 0,
                 .skipFeedbackOnTimeout = false,
+                .speedFactor           = true,
                 .dynFileMethod         = _HF_DYNFILE_SOFT,
                 .state                 = _HF_STATE_UNSET,
                 .hwCnts =
@@ -524,6 +525,7 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
         { { "sanitizers_del_report", required_argument, NULL, 0x10F }, "Delete sanitizer report after use (default: false)" },
         { { "monitor_sigabrt", required_argument, NULL, 0x105 }, "** DEPRECATED ** SIGABRT is always monitored" },
         { { "no_fb_timeout", required_argument, NULL, 0x106 }, "Skip feedback if the process has timeouted (default: false)" },
+        { { "no_speed_factor", required_argument, NULL, 0x117 }, "Don't consider execution speed when selecting a dynamic input (default: false)" },
         { { "exit_upon_crash", no_argument, NULL, 0x107 }, "Exit upon seeing the first crash" },
         { { "exit_code_upon_crash", required_argument, NULL, 0x113 }, "Exit code to use upon seeing the first crash" },
         { { "socket_fuzzer", no_argument, NULL, 0x10B }, "Instrument external fuzzer via socket" },
@@ -730,6 +732,9 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
             break;
         case 0x106:
             hfuzz->feedback.skipFeedbackOnTimeout = true;
+            break;
+        case 0x117:
+            hfuzz->feedback.speedFactor = false;
             break;
         case 0x107:
             hfuzz->cfg.exitUponCrash = true;
