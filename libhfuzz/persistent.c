@@ -57,6 +57,10 @@ void HF_ITER(const uint8_t** buf_ptr, size_t* len_ptr) {
     HonggfuzzFetchData(buf_ptr, len_ptr);
 }
 
+void HF_SCORE_ONE_INPUT(uint64_t score) {
+    HonggfuzzScoreOneInput(score);
+}
+
 extern const char* const LIBHFUZZ_module_memorycmp;
 extern const char* const LIBHFUZZ_module_instrument;
 static void              HonggfuzzRunOneInput(const uint8_t* buf, size_t len) {

@@ -41,6 +41,14 @@ size_t LLVMFuzzerMutate(uint8_t* Data, size_t Size, size_t MaxSize);
 void HF_ITER(const uint8_t** buf_ptr, size_t* len_ptr);
 void HonggfuzzFetchData(const uint8_t** buf_ptr, size_t* len_ptr);
 
+/*
+ * Provide a score for the input that was just ran.
+ *
+ * score: A score for the input, where higher scores indicate more interesting inputs
+ */
+void HF_SCORE_ONE_INPUT(uint64_t score);
+void HonggfuzzScoreOneInput(uint64_t score);
+
 #if defined(__linux__)
 
 #include <sched.h>

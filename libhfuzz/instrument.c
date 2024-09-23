@@ -809,6 +809,8 @@ void instrumentClearNewCov() {
     ATOMIC_CLEAR(globalCovFeedback->pidTotalPC[my_thread_no]);
     ATOMIC_CLEAR(globalCovFeedback->pidTotalEdge[my_thread_no]);
     ATOMIC_CLEAR(globalCovFeedback->pidTotalCmp[my_thread_no]);
+
+    ATOMIC_CLEAR(globalCovFeedback->pidScore[my_thread_no]);
 }
 
 void instrumentAddConstMem(const void* mem, size_t len, bool check_if_ro) {
@@ -864,4 +866,8 @@ void instrumentAddConstStrN(const char* s, size_t n) {
 
 bool instrumentConstAvail(void) {
     return (ATOMIC_GET(globalCmpFeedback) != NULL);
+}
+
+void HonggfuzzScoreOneInput(uint64_t score) {
+    ATOMIC_SET(globalCovFeedback->pidScore[my_thread_no], score);
 }

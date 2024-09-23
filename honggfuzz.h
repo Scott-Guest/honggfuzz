@@ -146,7 +146,7 @@ typedef enum {
 
 struct _dynfile_t {
     size_t             size;
-    uint64_t           cov[4];
+    uint64_t           cov[5];
     size_t             idx;
     int                fd;
     uint64_t           timeExecUSecs;
@@ -178,6 +178,7 @@ typedef struct {
     uint64_t pidTotalPC[_HF_THREAD_MAX];
     uint64_t pidTotalEdge[_HF_THREAD_MAX];
     uint64_t pidTotalCmp[_HF_THREAD_MAX];
+    uint64_t pidScore[_HF_THREAD_MAX];
 } feedback_t;
 
 typedef struct {
@@ -292,9 +293,10 @@ typedef struct {
         uint64_t*       blocklist;
         size_t          blocklistCnt;
         bool            skipFeedbackOnTimeout;
-        uint64_t        maxCov[4];
+        uint64_t        maxCov[5];
         dynFileMethod_t dynFileMethod;
         hwcnt_t         hwCnts;
+        uint64_t        maxScore;
     } feedback;
     struct {
         size_t mutationsCnt;

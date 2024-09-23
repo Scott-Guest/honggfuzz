@@ -38,4 +38,6 @@ extern void     instrumentAddConstStr(const char* s);
 extern void     instrumentAddConstStrN(const char* s, size_t n);
 extern bool     instrumentConstAvail();
 
+extern void HonggfuzzScoreOneInput(uint64_t score);
+
 #endif /* ifdef _HF_LIBHFUZZ_INSTRUMENT_H_ */

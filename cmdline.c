@@ -415,6 +415,7 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
                         .softCntPc    = 0ULL,
                         .softCntCmp   = 0ULL,
                     },
+                .maxScore = 0ULL,
             },
         .cnts =
             {

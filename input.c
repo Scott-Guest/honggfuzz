@@ -393,6 +393,7 @@ void input_addDynamicInput(run_t* run) {
     run->global->feedback.maxCov[1] = HF_MAX(run->global->feedback.maxCov[1], dynfile->cov[1]);
     run->global->feedback.maxCov[2] = HF_MAX(run->global->feedback.maxCov[2], dynfile->cov[2]);
     run->global->feedback.maxCov[3] = HF_MAX(run->global->feedback.maxCov[3], dynfile->cov[3]);
+    run->global->feedback.maxCov[4] = HF_MAX(run->global->feedback.maxCov[4], dynfile->cov[4]);
 
     run->global->io.dynfileqMaxSz = HF_MAX(run->global->io.dynfileqMaxSz, dynfile->size);
 
@@ -443,24 +444,6 @@ bool input_inDynamicCorpus(run_t* run, const char* fname, size_t len) {
     return false;
 }
 
-static inline int input_speedFactor(run_t* run, dynfile_t* dynfile) {
-    /* Slower the input, lower the chance of it being tested */
-    uint64_t avg_usecs_per_input =
-        ((uint64_t)(time(NULL) - run->global->timing.timeStart) * 1000000);
-    avg_usecs_per_input /= ATOMIC_GET(run->global->cnts.mutationsCnt);
-    avg_usecs_per_input /= run->global->threads.threadsMax;
-
-    /* Cap both vals to 1us-1s */
-    avg_usecs_per_input   = HF_CAP(avg_usecs_per_input, 1U, 1000000U);
-    uint64_t sample_usecs = HF_CAP(dynfile->timeExecUSecs, 1U, 1000000U);
-
-    if (sample_usecs >= avg_usecs_per_input) {
-        return (int)(sample_usecs / avg_usecs_per_input);
-    } else {
-        return -(int)(avg_usecs_per_input / sample_usecs);
-    }
-}
-
 static inline int input_skipFactor(run_t* run, dynfile_t* dynfile) {
     int penalty = 0;
 
@@ -471,12 +454,8 @@ static inline int input_skipFactor(run_t* run, dynfile_t* dynfile) {
 #endif
 
 #if 1
-    penalty -= HF_CAP(input_speedFactor(run, dynfile), -10, 10);
-#endif
-
-#if 1
     {
-        /* Inputs with lower total coverage -> lower chance of being tested */
+        /* Inputs with lower score -> lower chance of being tested */
         static const int scaleMap[200] = {
             [95 ... 199] = -10,
             [80 ... 94]  = -2,

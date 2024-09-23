@@ -397,6 +397,8 @@ void display_display(honggfuzz_t* hfuzz) {
     }
     display_put(" tm: " ESC_BOLD "%" _HF_NONMON_SEP PRIu64 ESC_RESET,
         ATOMIC_GET(hfuzz->timing.timeOfLongestUnitUSecs));
+    display_put(" scr: " ESC_BOLD "%" _HF_NONMON_SEP PRIu64 ESC_RESET,
+        ATOMIC_GET(hfuzz->feedback.maxScore));
     if (hfuzz->feedback.dynFileMethod & _HF_DYNFILE_INSTR_COUNT) {
         display_put(" hwi: " ESC_BOLD "%" _HF_NONMON_SEP PRIu64 ESC_RESET,
             ATOMIC_GET(hfuzz->feedback.hwCnts.cpuInstrCnt));

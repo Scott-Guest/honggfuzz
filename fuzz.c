@@ -213,6 +213,14 @@ static void fuzz_perfFeedback(run_t* run) {
         ATOMIC_CLEAR(run->global->feedback.covFeedbackMap->pidTotalCmp[run->fuzzNo]);
     }
 
+    uint64_t score = ATOMIC_GET(run->global->feedback.covFeedbackMap->pidScore[run->fuzzNo]);
+    ATOMIC_CLEAR(run->global->feedback.covFeedbackMap->pidScore[run->fuzzNo]);
+
+    int64_t scoreDiff = ATOMIC_GET(run->global->feedback.maxScore) - score;
+    if (scoreDiff < 0) {
+        ATOMIC_SET(run->global->feedback.maxScore, score);
+    }
+
     rmb();
 
     int64_t diff0 = (int64_t)run->global->feedback.hwCnts.cpuInstrCnt - run->hwCnts.cpuInstrCnt;
@@ -220,7 +228,7 @@ static void fuzz_perfFeedback(run_t* run) {
 
     /* Any increase in coverage (edge, pc, cmp, hw) counters forces adding input to the corpus */
     if (run->hwCnts.newBBCnt > 0 || softNewPC > 0 || softNewEdge > 0 || softNewCmp > 0 ||
-        diff0 < 0 || diff1 < 0) {
+        diff0 < 0 || diff1 < 0 || scoreDiff < 0) {
         if (diff0 < 0) {
             run->global->feedback.hwCnts.cpuInstrCnt = run->hwCnts.cpuInstrCnt;
         }
@@ -232,10 +240,10 @@ static void fuzz_perfFeedback(run_t* run) {
         run->global->feedback.hwCnts.softCntEdge += softNewEdge;
         run->global->feedback.hwCnts.softCntCmp += softNewCmp;
 
-        LOG_I("Sz:%zu Tm:%" _HF_NONMON_SEP PRIu64 "us (i/b/h/e/p/c) New:%" PRIu64 "/%" PRIu64
-              "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 ", Cur:%" PRIu64 "/%" PRIu64
-              "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64,
-            run->dynfile->size, util_timeNowUSecs() - run->timeStartedUSecs,
+        LOG_I("Sz:%zu Tm:%" _HF_NONMON_SEP PRIu64 "us Scr:%" PRIu64 " (i/b/h/e/p/c) New:%" PRIu64
+              "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 ", Cur:%" PRIu64
+              "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64,
+            run->dynfile->size, util_timeNowUSecs() - run->timeStartedUSecs, score,
             run->hwCnts.cpuInstrCnt, run->hwCnts.cpuBranchCnt, run->hwCnts.newBBCnt, softNewEdge,
             softNewPC, softNewCmp, run->hwCnts.cpuInstrCnt, run->hwCnts.cpuBranchCnt,
             run->global->feedback.hwCnts.bbCnt, run->global->feedback.hwCnts.softCntEdge,
@@ -273,10 +281,11 @@ static void fuzz_perfFeedback(run_t* run) {
         }
 
         /* Update per-input coverage metrics */
-        run->dynfile->cov[0] = softCurEdge + softCurPC + run->hwCnts.bbCnt;
-        run->dynfile->cov[1] = softCurCmp;
-        run->dynfile->cov[2] = run->hwCnts.cpuInstrCnt + run->hwCnts.cpuBranchCnt;
-        run->dynfile->cov[3] = run->dynfile->size ? (64 - util_Log2(run->dynfile->size)) : 64;
+        run->dynfile->cov[0] = score;
+        run->dynfile->cov[1] = softCurEdge + softCurPC + run->hwCnts.bbCnt;
+        run->dynfile->cov[2] = softCurCmp;
+        run->dynfile->cov[3] = run->hwCnts.cpuInstrCnt + run->hwCnts.cpuBranchCnt;
+        run->dynfile->cov[4] = run->dynfile->size ? (64 - util_Log2(run->dynfile->size)) : 64;
         input_addDynamicInput(run);
 
         if (run->global->socketFuzzer.enabled) {
