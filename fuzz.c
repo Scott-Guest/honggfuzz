@@ -240,9 +240,10 @@ static void fuzz_perfFeedback(run_t* run) {
         run->global->feedback.hwCnts.softCntEdge += softNewEdge;
         run->global->feedback.hwCnts.softCntCmp += softNewCmp;
 
-        LOG_I("Sz:%zu Tm:%" _HF_NONMON_SEP PRIu64 "us Scr:%" PRIu64 " (i/b/h/e/p/c) New:%" PRIu64
-              "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 ", Cur:%" PRIu64
-              "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64,
+        LOG_I("Sz:%zu Tm:%" _HF_NONMON_SEP PRIu64 "us Scr:%" _HF_NONMON_SEP PRIu64
+              " (i/b/h/e/p/c) New:%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64
+              "/%" PRIu64 ", Cur:%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64
+              "/%" PRIu64,
             run->dynfile->size, util_timeNowUSecs() - run->timeStartedUSecs, score,
             run->hwCnts.cpuInstrCnt, run->hwCnts.cpuBranchCnt, run->hwCnts.newBBCnt, softNewEdge,
             softNewPC, softNewCmp, run->hwCnts.cpuInstrCnt, run->hwCnts.cpuBranchCnt,
