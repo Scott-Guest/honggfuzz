@@ -293,6 +293,7 @@ typedef struct {
         uint64_t*       blocklist;
         size_t          blocklistCnt;
         bool            skipFeedbackOnTimeout;
+        bool            speedFactor;
         uint64_t        maxCov[5];
         dynFileMethod_t dynFileMethod;
         hwcnt_t         hwCnts;
