@@ -374,7 +374,7 @@ void input_addDynamicInput(run_t* run) {
 
     dynfile_t* dynfile     = (dynfile_t*)util_Calloc(sizeof(dynfile_t));
     dynfile->size          = run->dynfile->size;
-    dynfile->timeExecUSecs = util_timeNowUSecs() - run->timeStartedUSecs;
+    dynfile->timeExecUSecs = run->dynfile->timeExecUSecs;
     dynfile->data          = (uint8_t*)util_AllocCopy(run->dynfile->data, run->dynfile->size);
     dynfile->src           = run->dynfile->src;
     memcpy(dynfile->cov, run->dynfile->cov, sizeof(dynfile->cov));

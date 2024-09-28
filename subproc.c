@@ -441,6 +441,9 @@ bool subproc_Run(run_t* run) {
     arch_reapChild(run);
 
     int64_t diffUSecs = util_timeNowUSecs() - run->timeStartedUSecs;
+    if (run->dynfile) {
+        run->dynfile->timeExecUSecs = diffUSecs;
+    }
 
     {
         MX_SCOPED_LOCK(&run->global->mutex.timing);
